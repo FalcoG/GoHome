@@ -1,0 +1,21 @@
+<svg width="256" height="256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <mask id="cutout" maskUnits="userSpaceOnUse">
+        <rect width="100%" height="100%" fill="white"/>
+        <text 
+        text-anchor="middle" 
+        x="128" 
+        font-family="Arial" 
+        font-size="196" 
+        font-weight="900"
+        y="210" 
+        >G</text>
+    </mask>
+  </defs>
+  <path
+  d="M16,240 L16,90 L128,16 L240,90 L240,240 Z" 
+  fill="#00ADD8"
+  fill-rule="evenodd" mask="url(#cutout)"
+  />
+
+</svg>

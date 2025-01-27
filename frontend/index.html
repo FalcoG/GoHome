@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" type="image/svg+xml" href="/wails.png"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Wails App</title>
+    <style>
+        :root {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+            "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+            sans-serif;
+            color-scheme: light dark;
+            display: flex;
+            justify-content: center;
+            font-size: 0.9rem;
+            
+        }
+
+        * {
+            user-select: none; /* ignored on macOS, requires prefixes */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            place-items: center;
+            place-content: center;
+            line-height: 1.6em;
+            max-width: 80vw;
+            min-height: 100vh;
+            justify-content: center;
+            align-self: center;
+        }
+
+        h1 {
+            text-align: center;
+            color: #00acd7;
+        }
+
+        input, label {
+            display: block;
+            width: 100%;
+        }
+
+        pre {
+            text-align: left;
+            max-width: 80vw;
+            overflow: auto;
+        }
+
+        fieldset, .box {
+            margin: 0;
+            border: 1px solid;
+            padding: 1em;
+            border-radius: .5rem;
+        }
+
+        [data-ha-status="200"] #connection {
+            display: block;
+        }
+
+        #connection .host {
+            margin-top: 0;
+            letter-spacing: .1em;
+        }
+
+        .notification {
+            border-left: .4em solid;
+            padding: .4em .8em;
+            margin: 1em 0;
+            background: black;
+            display: none;
+        }
+
+        .notification.error   { display: block; color: red }
+        .notification.success { display: block; color: green }
+        .notification.info    { display: block; color: lightskyblue }
+
+        footer {
+            font-size: 0.6rem;
+            line-height: 1.2em;
+            color: #ce3262;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>GoHome</h1>
+
+    <div id="active-connection" style="display: none">
+        <div id="connection" class="box">
+            <p class="host">loading...</p>
+            <small class="status">🟢 Connected</span>
+            &nbsp;
+            <button style="float:right" id="modify-connection">Modify connection</button>
+        </div>
+
+        <p>Setup complete. Start using GoHome by opening the tray icon.</p>
+    </div>
+
+    <div id="setup-mode">
+        <form id="setup">
+            <fieldset>
+                <legend>Server connection</legend>
+            <label>
+                Home Assistant URL
+                <input type="url" id="home-assistant-address" value="http://homeassistant.local:8123" name="address">
+                <sub>e.g.: https://home.example.org:8123</sub>
+            </label>
+    
+            <label>
+                Home Assistant Token
+                <input type="password" id="home-assistant-token" name="token">
+            </label>
+            <div class="notification" id="result"></div>
+    
+            <button>Connect</button>
+        </fieldset>
+        </form>
+
+        <h2>Instructions</h2>
+        <p>To connect with Home Assistant you must provide a long-lived access token.</p>
+
+        <p>In order to such an access token token, follow these instructions:</p>
+        <ol>
+            <li>Navigate to Home Assistant web interface</li>
+            <li>Click on your user profile</li>
+            <li>Go to "Security"</li>
+            <li>Navigate to "Long-lived access token"</li>
+            <li>Create a token with a recognizable name</li>
+            <li>Copy the token and paste it into GoHome</li>
+        </ol>
+    </div>
+    
+    <footer>
+        <p>
+            GoHome has been made with Wails
+        </p>
+    </footer>
+</div>
+
+<script type="module" src="/main.js"></script>
+
+</body>
+</html>

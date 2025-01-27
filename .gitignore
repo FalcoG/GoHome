@@ -1,0 +1,14 @@
+# project files
+bin/
+frontend/bindings/
+frontend/dist/
+*/node_modules/
+*.bak
+.task/
+
+# macOS artifacts
+*.DS_Store
+
+# IDE artifacts
+.vscode/
+.idea/
