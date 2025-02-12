@@ -5,7 +5,7 @@
         <text 
         text-anchor="middle" 
         x="128" 
-        font-family="Arial" 
+        font-family="arial, sans-serif"
         font-size="196" 
         font-weight="900"
         y="210" 
