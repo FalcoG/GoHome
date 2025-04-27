@@ -3,7 +3,6 @@ package main
 import (
 	"embed"
 	"log"
-
 	"runtime"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -24,31 +23,35 @@ var assets embed.FS
 //go:embed MacTrayIcon.png
 var SystrayMac []byte
 
-func populateMenu(kvStore *kvstore.KeyValueStore, app *application.App) *application.Menu {
+func populateMenu(kvStore *kvstore.Service, app *application.App) *application.Menu {
 	println("populateMenu")
 	menu := app.NewMenu()
 
-	address := kvStore.Get("ha-address").(string)
-	token := kvStore.Get("ha-token").(string)
+	var addressStore = kvStore.Get("ha-address")
+	var tokenStore = kvStore.Get("ha-token")
+	address, isAddressSet := addressStore.(string)
+	token, isTokenSet := tokenStore.(string)
 
-	statusCode := verifyHomeConnection(
-		address,
-		token,
-	)
+	if isAddressSet && isTokenSet {
+		statusCode := verifyHomeConnection(
+			address,
+			token,
+		)
 
-	if statusCode != 200 {
-		menu.Add("Scenes unavailable").SetEnabled(false)
-		println("Failed to load scenes, http", statusCode)
-	} else {
-		statusCode, homeScenes := getHomeScenes(address, token)
+		if statusCode != 200 {
+			menu.Add("Scenes unavailable").SetEnabled(false)
+			println("Failed to load scenes, http", statusCode)
+		} else {
+			statusCode, homeScenes := getHomeScenes(address, token)
 
-		if statusCode == 200 {
-			for _, value := range homeScenes {
-				println(value.Name)
+			if statusCode == 200 {
+				for _, value := range homeScenes {
+					println(value.Name)
 
-				menu.Add(value.Name).OnClick(func(ctx *application.Context) {
-					activateHomeScene(address, token, value.EntityID)
-				})
+					menu.Add(value.Name).OnClick(func(ctx *application.Context) {
+						activateHomeScene(address, token, value.EntityID)
+					})
+				}
 			}
 		}
 	}
@@ -81,10 +84,16 @@ func main() {
 		// todo: crash the application
 	}
 
-	configKvStore := kvstore.New(&kvstore.Config{
+	configKvStore := kvstore.NewWithConfig(&kvstore.Config{
 		Filename: configFilePath,
 		AutoSave: true,
 	})
+
+	loadError := configKvStore.Load()
+
+	if loadError != nil {
+		log.Fatal(loadError)
+	}
 
 	app := application.New(application.Options{
 		Name:        "GoHome",
@@ -140,7 +149,7 @@ func main() {
 
 		app.EmitEvent("ha-status", statusCode)
 
-		app.Logger.Info("[Go] CustomEvent received", "name", e.Name, "data", e.Data, "sender", e.Sender, "cancelled", e.Cancelled)
+		app.Logger.Info("[Go] CustomEvent received", "name", e.Name, "data", e.Data, "sender", e.Sender)
 	})
 
 	app.OnEvent("get-status", func(e *application.CustomEvent) {

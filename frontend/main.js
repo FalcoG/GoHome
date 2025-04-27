@@ -1,5 +1,5 @@
 import { Events } from "@wailsio/runtime";
-import { KeyValueStore } from "./bindings/github.com/wailsapp/wails/v3/pkg/services/kvstore";
+import { Service as KeyValueStore } from "./bindings/github.com/wailsapp/wails/v3/pkg/services/kvstore";
 
 const resultElement = document.getElementById('result');
 const timeElement = document.getElementById('time');
@@ -7,13 +7,19 @@ const timeElement = document.getElementById('time');
 const form = document.getElementById("setup")
 
 KeyValueStore.Get("ha-address").then((value) => {
+    if (typeof value !== 'string') value = ''
     form.querySelector('[name="address"]').value = value
 
-    const url = new URL(value)
-    document.querySelector('#connection .host').innerText = `${url.hostname}:${url.port}`
+    try {
+        const url = new URL(value)
+        document.querySelector('#connection .host').innerText = `${url.hostname}:${url.port}`
+    } catch {
+        // don't care
+    }
 })
 
 KeyValueStore.Get("ha-token").then((value) => {
+    if (typeof value !== 'string') value = ''
     form.querySelector('[name="token"]').value = value
 
     if (value.length > 0) {
